@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda Siswa - Ruang Aman</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dominantStart: '#F8FAFC',
+                        dominantEnd: '#EDF4FC',
+                        tealDark: '#12315F',
+                        tealMain: '#2563EB',
+                        tealLight: '#38BDF8',
+                        accentStart: '#FF8A5B',
+                        accentEnd: '#FFB36B',
+                        textMain: '#1F2937',
+                        textSec: '#5B6573',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .bg-dominant-gradient {
+            background: linear-gradient(180deg, #F8FAFC 0%, #EDF4FC 100%);
+        }
+        .bg-teal-gradient {
+            background: linear-gradient(135deg, #12315F 0%, #2563EB 55%, #38BDF8 100%);
+        }
+        .bg-accent-gradient {
+            background: linear-gradient(135deg, #FF8A5B 0%, #FFB36B 100%);
+            background-size: 100%;
+            transition: background-size 0.3s ease, transform 0.2s ease;
+        }
+        .bg-accent-gradient:hover {
+            background-size: 160%;
+            transform: translateY(-2px);
+        }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(14, 90, 99, 0.08), 0 8px 10px -6px rgba(14, 90, 99, 0.08);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dominant-gradient text-textMain min-h-full flex flex-col antialiased" x-data="{ openReportModal: false, isAnonymous: false, reportType: 'verbal', successAlert: false, reportStatus: 'selesai', feedbackGiven: false }">
+
+    <!-- Container Utama: Mobile First, Max 720px di layar lebar -->
+    <div class="w-full max-w-[720px] mx-auto min-h-screen bg-white shadow-sm flex flex-col relative">
+
+        <!-- 1) Bar Atas (Header Bar) -->
+        <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-2xl bg-teal-gradient flex items-center justify-center text-white shadow-sm">
+                    <i class="fa-solid fa-shield-heart text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base text-textMain leading-tight">Ruang Aman</h1>
+                    <p class="text-xs text-textSec font-medium">BK Sekolah</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a href="login-v7.html" aria-label="Keluar cepat" class="px-2.5 py-1.5 rounded-xl bg-gray-50 hover:bg-red-50 text-textSec hover:text-red-600 text-xs font-semibold transition-colors flex items-center gap-1.5 border border-gray-100">
+                    <i class="fa-solid fa-power-off text-xs"></i>
+                    <span class="hidden sm:inline">Keluar</span>
+                </a>
+
+                <div class="relative" x-data="{ openNotif: false }">
+                    <button @click="openNotif = !openNotif" aria-label="Notifikasi" class="w-9 h-9 rounded-xl bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-textSec transition-colors relative">
+                        <i class="fa-regular fa-bell text-sm"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-accentStart rounded-full"></span>
+                    </button>
+                    <div x-show="openNotif" @click.away="openNotif = false" x-cloak class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 p-3 text-xs z-50">
+                        <div class="font-bold text-textMain pb-2 border-b border-gray-100 mb-2 flex justify-between items-center">
+                            <span>Pemberitahuan</span>
+                            <span class="text-[10px] text-tealMain font-semibold">Baru</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="p-2 rounded-xl bg-teal-50/50 text-textSec">
+                                <p class="font-semibold text-textMain">Laporan #LAP-882 Diverifikasi</p>
+                                <p class="text-[11px] mt-0.5">Guru BK telah membaca dan memproses laporanmu.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-9 h-9 rounded-xl bg-teal-50 text-tealDark flex items-center justify-center font-bold text-sm border border-teal-100">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Konten Utama -->
+        <main class="flex-1 p-4 space-y-6">
+
+            <!-- Alert Berhasil Kirim Laporan -->
+            <div x-show="successAlert" x-transition class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                    <span>Laporan baru berhasil dikirim secara aman. Guru BK akan segera meninjau.</span>
+                </div>
+                <button @click="successAlert = false" class="text-emerald-700 hover:text-emerald-900 font-bold">&times;</button>
+            </div>
+
+            <!-- 2) Hero Sapaan & Tombol Aksi Utama "Ceritakan sekarang" -->
+            <section class="p-6 rounded-2xl bg-teal-gradient text-white shadow-md relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-8 -bottom-8 w-36 h-36 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                
+                <div class="space-y-2 relative z-10">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold text-white">
+                        <i class="fa-solid fa-seedling"></i> Ruang Tenang & Rahasia
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold leading-snug">Hai, kamu tidak sendiri. Ada hal yang ingin diceritakan?</h2>
+                    <p class="text-xs sm:text-sm text-white/80 font-medium max-w-lg">
+                        Apapun yang kamu rasakan di sekolah, ceritakan dengan aman di sini. Identitasmu terjaga dan didengarkan dengan penuh empati.
+                    </p>
+                </div>
+
+                <div class="mt-6 relative z-10">
+                    <button @click="openReportModal = true" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-accent-gradient text-textMain font-bold text-sm shadow-md flex items-center justify-center gap-2.5 cursor-pointer">
+                        <i class="fa-solid fa-pen-nib text-base"></i>
+                        <span>Ceritakan sekarang</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 3) Kartu "Laporan terakhirmu" (Status + Timeline Mini + Konfirmasi Selesai) -->
+            <section class="space-y-3">
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="font-bold text-sm text-textMain flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-tealMain"></i> Laporan Terakhirmu
+                    </h3>
+                    <span class="text-xs text-textSec font-medium">ID: #LAP-882</span>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-4">
+                    <!-- Header Laporan -->
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">Verbal</span>
+                                <span class="text-[11px] text-textSec font-medium"><i class="fa-regular fa-calendar mr-1"></i> 12 Okt 2026</span>
+                            </div>
+                            <h4 class="font-bold text-base text-textMain">Merasa tertekan karena ejekan di lingkungan kelas</h4>
+                        </div>
+                        
+                        <!-- Badge Status (Datar, Warna sesuai aturan) -->
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span> Selesai
+                        </span>
+                    </div>
+
+                    <!-- Ringkasan Isi -->
+                    <p class="text-xs text-textSec leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        "Sudah dibimbing dan dipertemukan dengan pendekatan persuasif oleh Wali Kelas dan Guru BK. Suasana sudah kembali kondusif."
+                    </p>
+
+                    <!-- Timeline Mini -->
+                    <div class="pt-2 border-t border-gray-100">
+                        <p class="text-[11px] font-bold text-textMain mb-2.5">Perjalanan Penanganan:</p>
+                        <div class="grid grid-cols-5 gap-1 text-center">
+                            <!-- Step 1: Dikirim -->
+                            <div class="space-y-1">
+                                <div class="w-7 h-7 mx-auto rounded-full bg-gray-600 text-white flex items-center justify-center text-[10px] font-bold">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span class="text-[10px] text-textSec block font-medium">Dikirim</span>
+                            </div>
+                            <!-- Step 2: Dalam Proses -->
+                            <div class="space-y-1">
+                                <div class="w-7 h-7 mx-auto rounded-full bg-amber-700 text-white flex items-center justify-center text-[10px] font-bold">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span class="text-[10px] text-textSec block font-medium">Proses</span>
+                            </div>
+                            <!-- Step 3: Diverifikasi -->
+                            <div class="space-y-1">
+                                <div class="w-7 h-7 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span class="text-[10px] text-textSec block font-medium">Verifikasi</span>
+                            </div>
+                            <!-- Step 4: Selesai -->
+                            <div class="space-y-1">
+                                <div class="w-7 h-7 mx-auto rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-bold">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <span class="text-[10px] text-textSec block font-bold text-emerald-800">Selesai</span>
+                            </div>
+                            <!-- Step 5: Konfirmasi Siswa -->
+                            <div class="space-y-1">
+                                <div class="w-7 h-7 mx-auto rounded-full bg-tealMain text-white flex items-center justify-center text-[10px] font-bold">
+                                    <i class="fa-solid fa-shield-heart"></i>
+                                </div>
+                                <span class="text-[10px] text-tealDark block font-bold">Aman</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Konfirmasi Selesai (Hanya muncul jika status selesai dan belum konfirmasi) -->
+                    <div x-show="!feedbackGiven" class="p-4 rounded-2xl bg-teal-50/70 border border-teal-100 space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-question text-tealMain text-sm"></i>
+                            <p class="text-xs font-bold text-tealDark">Bagaimana kondisi kamu sekarang setelah penanganan ini?</p>
+                        </div>
+                        <div class="flex items-center gap-2.5 pt-1">
+                            <button @click="feedbackGiven = true" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-face-smile"></i> Sudah aman
+                            </button>
+                            <button @click="feedbackGiven = true; openReportModal = true;" class="flex-1 py-2.5 px-3 rounded-xl bg-white hover:bg-amber-50 text-amber-800 border border-amber-300 font-bold text-xs shadow-sm transition-colors flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Masih terjadi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pesan setelah konfirmasi -->
+                    <div x-show="feedbackGiven" x-cloak class="p-3 rounded-xl bg-teal-50 text-tealDark text-xs font-medium text-center">
+                        <i class="fa-solid fa-heart mr-1 text-tealMain"></i> Terima kasih atas konfirmasimu. Ruang Aman selalu ada untukmu.
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Modal Form Laporan Baru -->
+        <div x-show="openReportModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
+            <div @click.away="openReportModal = false" class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl border-t-4 border-tealMain space-y-4 my-8 relative">
+                
+                <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-teal-50 text-tealMain flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-hands-holding-child"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base text-textMain">Buat Laporan / Cerita</h3>
+                            <p class="text-xs text-textSec">Guru BK siap mendampingi dan menjaga kerahasiaanmu</p>
+                        </div>
+                    </div>
+                    <button @click="openReportModal = false" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-textSec flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form @submit.prevent="openReportModal = false; successAlert = true; document.getElementById('reportForm').reset();" id="reportForm" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-textMain mb-1.5">Jenis Permasalahan / Kejadian</label>
+                        <select x-model="reportType" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-textMain font-medium focus:outline-none focus:border-tealMain focus:ring-2 focus:ring-tealMain/10">
+                            <option value="verbal">Verbal (Contoh: Diejek, Dipermalukan)</option>
+                            <option value="fisik">Fisik (Contoh: Didorong, Dipukul)</option>
+                            <option value="sosial">Sosial (Contoh: Dikucilkan, Disebarkan Rumor)</option>
+                            <option value="siber">Siber / Online (Contoh: Bullying di Medsos)</option>
+                            <option value="lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-textMain mb-1.5">Judul Singkat Cerita / Laporan</label>
+                        <input type="text" placeholder="Misal: Merasa tertekan karena ejekan di kelas" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-textMain font-medium focus:outline-none focus:border-tealMain focus:ring-2 focus:ring-tealMain/10" required>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-textMain mb-1.5">Ceritakan kejadian atau apa yang kamu rasakan secara jujur</label>
+                        <textarea rows="4" placeholder="Tuliskan dengan tenang, tidak ada yang menghakimi di sini..." class="w-full p-3.5 rounded-xl border border-gray-200 bg-gray-50/50 text-textMain font-medium focus:outline-none focus:border-tealMain focus:ring-2 focus:ring-tealMain/10 resize-none" required></textarea>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-teal-50/60 border border-teal-100 flex items-start gap-3">
+                        <input type="checkbox" id="anonCheck" x-model="isAnonymous" class="mt-0.5 rounded border-gray-300 text-tealMain focus:ring-tealMain w-4 h-4 accent-tealMain">
+                        <label for="anonCheck" class="text-xs text-textSec cursor-pointer">
+                            <span class="font-bold text-tealDark block">Kirim sebagai Anonim</span>
+                            Identitasmu disembunyikan dari siswa lain. Hanya Guru BK yang dapat melihat data pelapor asli untuk keperluan pendampingan.
+                        </label>
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="button" @click="openReportModal = false" class="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-textSec hover:bg-gray-50 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="flex-1 py-3 rounded-xl bg-accent-gradient text-textMain font-bold shadow-md hover:opacity-95 transition-all">
+                            Kirim Laporan
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Footer Ringkas -->
+        <footer class="py-4 text-center text-xs text-textSec border-t border-gray-100 bg-gray-50/50">
+            <p>Ruang Aman &bull; Layanan Konseling & Pengaduan Siswa yang Terjaga</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

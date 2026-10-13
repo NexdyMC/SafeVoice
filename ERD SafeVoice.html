@@ -1,0 +1,375 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ERD SafeVoice</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: ERD lebar yang bisa digeser, legenda di atas, tabel relasi di bawah */
+  :root {
+    --bg: #FBF7F0; --card: #FFFFFF; --fg: #1F2937; --muted: #5B6573; --line: #1F6F78; --edge: #E6DDCF;
+    --accent: #B4600C; --h-id: #1F6F78; --h-p: #4B6A8A; --h-c: #B4600C; --h-l: #5B6573; --on-h: #FFFFFF;
+    --pk: #B4600C; --fk: #1F6F78; --uk: #6B7280;
+    --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1B1E; --card: #17272B; --fg: #E8F0F0; --muted: #9AAEB0; --line: #5CB8C2; --edge: #28403F;
+      --accent: #F29F4B; --h-id: #1F6F78; --h-p: #3E5C7A; --h-c: #9A560F; --h-l: #3F4D55;
+      --pk: #F29F4B; --fk: #5CB8C2; --uk: #9AAEB0; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1B1E; --card: #17272B; --fg: #E8F0F0; --muted: #9AAEB0; --line: #5CB8C2; --edge: #28403F;
+    --accent: #F29F4B; --h-id: #1F6F78; --h-p: #3E5C7A; --h-c: #9A560F; --h-l: #3F4D55;
+    --pk: #F29F4B; --fk: #5CB8C2; --uk: #9AAEB0; color-scheme: dark;
+  }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 28px 56px; }
+  main { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 26px; }
+  h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.15; margin: 0 0 6px; text-wrap: balance; }
+  h2 { font-size: 18px; margin: 0 0 10px; }
+  .lede { margin: 0; color: var(--muted); max-width: 66ch; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend b { font: 700 10px var(--mono); }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .ln { width: 26px; border-top: 2px solid var(--line); display: inline-block; }
+  .ln.dash { border-top-style: dashed; border-color: var(--accent); }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--edge); border-radius: 14px; padding: 8px; }
+  svg { display: block; min-width: 1100px; width: 100%; height: auto; }
+  figcaption { color: var(--muted); font-size: 13px; }
+  .tbl { fill: var(--card); stroke: var(--line); stroke-width: 1.4; }
+  .hd.id { fill: var(--h-id); } .hd.p { fill: var(--h-p); } .hd.c { fill: var(--h-c); } .hd.l { fill: var(--h-l); }
+  .tn { fill: var(--on-h); font: 700 13px var(--mono); }
+  .sep { stroke: var(--edge); stroke-width: 1; }
+  .cn { fill: var(--fg); font: 400 12px var(--mono); } .cn.pk { font-weight: 600; }
+  .ty { fill: var(--muted); font: 400 10.5px var(--mono); }
+  .k { font: 700 9.5px var(--mono); } .k.PK { fill: var(--pk); } .k.FK { fill: var(--fk); } .k.UK { fill: var(--uk); }
+  .ed { stroke: var(--line); stroke-width: 1.6; fill: none; }
+  .ed.dash { stroke: var(--accent); stroke-dasharray: 6 4; }
+  .el { fill: var(--muted); font: 600 10.5px var(--mono); paint-order: stroke; stroke: var(--card); stroke-width: 4px; stroke-linejoin: round; }
+  .el.dash { fill: var(--accent); }
+  .el.sm { font-size: 9px; stroke-width: 3px; }
+  .card { fill: var(--fg); font: 700 11px var(--mono); paint-order: stroke; stroke: var(--card); stroke-width: 3px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--edge); vertical-align: top; }
+  th { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  td:nth-child(4) { font-family: var(--mono); white-space: nowrap; }
+  code { font-family: var(--mono); font-size: 12.5px; }
+  @media (max-width: 640px) {
+    thead { display: none; }
+    tr { display: block; padding-block: 8px; border-bottom: 1px solid var(--edge); }
+    td { display: block; border: 0; padding: 2px 0; }
+    td::before { content: attr(data-l) ": "; color: var(--muted); font-size: 12px; }
+  }
+</style>
+
+<main>
+  <header>
+    <h1>ERD SafeVoice</h1>
+    <p class="lede">Sembilan tabel aplikasi pelaporan perundungan dan hubungan antar tabelnya. Semua tabel memakai prefix <code>tb_</code>, sama dengan migration Laravel yang sudah dibuat.</p>
+  </header>
+
+  <div class="legend" aria-label="Legenda">
+    <span><b style="color:var(--pk)">PK</b> kunci utama</span>
+    <span><b style="color:var(--fk)">FK</b> kunci asing</span>
+    <span><b style="color:var(--uk)">UK</b> nilai unik</span>
+    <span><i class="ln"></i> relasi (1 = satu, N = banyak)</span>
+    <span><i class="ln dash"></i> relasi pencatat riwayat</span>
+    <span><i class="sw" style="background:var(--h-id)"></i> akun <i class="sw" style="background:var(--h-p)"></i> profil <i class="sw" style="background:var(--h-c)"></i> inti <i class="sw" style="background:var(--h-l)"></i> pendukung</span>
+  </div>
+
+  <figure>
+    <div class="scroll">
+      <svg viewBox="0 0 1270 850" role="img" aria-label="ERD aplikasi pelaporan bullying. tb_users berelasi satu-satu dengan tb_siswa, tb_wali_kelas dan tb_guru_bk. tb_laporan berelasi dengan tb_siswa sebagai pelapor dan korban, dengan tb_guru_bk, dan menjadi induk bagi tb_laporan_status_log, tb_konsultasi_wali_kelas dan tb_bukti_laporan.">
+<g>
+<rect class="tbl" x="40" y="250" width="230" height="184" rx="9"/>
+<rect class="hd id" x="40" y="250" width="230" height="30" rx="9"/><rect class="hd id" x="40" y="264" width="230" height="16"/>
+<text class="tn" x="52" y="270">tb_users</text>
+<line class="sep" x1="40" y1="280" x2="270" y2="280"/>
+<text class="k PK" x="49" y="295">PK</text>
+<text class="cn pk" x="76" y="295">id</text>
+<text class="ty" x="260" y="295" text-anchor="end">bigint</text>
+<line class="sep" x1="40" y1="302" x2="270" y2="302"/>
+<text class="cn" x="76" y="317">nama_lengkap</text>
+<text class="ty" x="260" y="317" text-anchor="end">varchar(100)</text>
+<line class="sep" x1="40" y1="324" x2="270" y2="324"/>
+<text class="k UK" x="49" y="339">UK</text>
+<text class="cn" x="76" y="339">email</text>
+<text class="ty" x="260" y="339" text-anchor="end">varchar(150)</text>
+<line class="sep" x1="40" y1="346" x2="270" y2="346"/>
+<text class="cn" x="76" y="361">password</text>
+<text class="ty" x="260" y="361" text-anchor="end">varchar(255)</text>
+<line class="sep" x1="40" y1="368" x2="270" y2="368"/>
+<text class="cn" x="76" y="383">role</text>
+<text class="ty" x="260" y="383" text-anchor="end">enum</text>
+<line class="sep" x1="40" y1="390" x2="270" y2="390"/>
+<text class="cn" x="76" y="405">is_active</text>
+<text class="ty" x="260" y="405" text-anchor="end">boolean</text>
+<line class="sep" x1="40" y1="412" x2="270" y2="412"/>
+<text class="cn" x="76" y="427">deleted_at</text>
+<text class="ty" x="260" y="427" text-anchor="end">timestamp</text>
+</g>
+<g>
+<rect class="tbl" x="40" y="40" width="230" height="118" rx="9"/>
+<rect class="hd p" x="40" y="40" width="230" height="30" rx="9"/><rect class="hd p" x="40" y="54" width="230" height="16"/>
+<text class="tn" x="52" y="60">tb_wali_kelas</text>
+<line class="sep" x1="40" y1="70" x2="270" y2="70"/>
+<text class="k PK" x="49" y="85">PK</text>
+<text class="cn pk" x="76" y="85">id</text>
+<text class="ty" x="260" y="85" text-anchor="end">bigint</text>
+<line class="sep" x1="40" y1="92" x2="270" y2="92"/>
+<text class="k FK" x="49" y="107">FK</text>
+<text class="cn" x="76" y="107">user_id</text>
+<text class="ty" x="260" y="107" text-anchor="end">bigint</text>
+<line class="sep" x1="40" y1="114" x2="270" y2="114"/>
+<text class="k UK" x="49" y="129">UK</text>
+<text class="cn" x="76" y="129">nip</text>
+<text class="ty" x="260" y="129" text-anchor="end">varchar(25)</text>
+<line class="sep" x1="40" y1="136" x2="270" y2="136"/>
+<text class="cn" x="76" y="151">no_hp</text>
+<text class="ty" x="260" y="151" text-anchor="end">varchar(20)</text>
+</g>
+<g>
+<rect class="tbl" x="40" y="500" width="230" height="118" rx="9"/>
+<rect class="hd p" x="40" y="500" width="230" height="30" rx="9"/><rect class="hd p" x="40" y="514" width="230" height="16"/>
+<text class="tn" x="52" y="520">tb_guru_bk</text>
+<line class="sep" x1="40" y1="530" x2="270" y2="530"/>
+<text class="k PK" x="49" y="545">PK</text>
+<text class="cn pk" x="76" y="545">id</text>
+<text class="ty" x="260" y="545" text-anchor="end">bigint</text>
+<line class="sep" x1="40" y1="552" x2="270" y2="552"/>
+<text class="k FK" x="49" y="567">FK</text>
+<text class="cn" x="76" y="567">user_id</text>
+<text class="ty" x="260" y="567" text-anchor="end">bigint</text>
+<line class="sep" x1="40" y1="574" x2="270" y2="574"/>
+<text class="k UK" x="49" y="589">UK</text>
+<text class="cn" x="76" y="589">nip</text>
+<text class="ty" x="260" y="589" text-anchor="end">varchar(25)</text>
+<line class="sep" x1="40" y1="596" x2="270" y2="596"/>
+<text class="cn" x="76" y="611">no_hp</text>
+<text class="ty" x="260" y="611" text-anchor="end">varchar(20)</text>
+</g>
+<g>
+<rect class="tbl" x="350" y="40" width="230" height="118" rx="9"/>
+<rect class="hd p" x="350" y="40" width="230" height="30" rx="9"/><rect class="hd p" x="350" y="54" width="230" height="16"/>
+<text class="tn" x="362" y="60">tb_kelas</text>
+<line class="sep" x1="350" y1="70" x2="580" y2="70"/>
+<text class="k PK" x="359" y="85">PK</text>
+<text class="cn pk" x="386" y="85">id</text>
+<text class="ty" x="570" y="85" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="92" x2="580" y2="92"/>
+<text class="cn" x="386" y="107">nama_kelas</text>
+<text class="ty" x="570" y="107" text-anchor="end">varchar(20)</text>
+<line class="sep" x1="350" y1="114" x2="580" y2="114"/>
+<text class="cn" x="386" y="129">tahun_ajaran</text>
+<text class="ty" x="570" y="129" text-anchor="end">varchar(9)</text>
+<line class="sep" x1="350" y1="136" x2="580" y2="136"/>
+<text class="k FK" x="359" y="151">FK</text>
+<text class="cn" x="386" y="151">wali_kelas_id</text>
+<text class="ty" x="570" y="151" text-anchor="end">bigint</text>
+</g>
+<g>
+<rect class="tbl" x="350" y="250" width="230" height="140" rx="9"/>
+<rect class="hd p" x="350" y="250" width="230" height="30" rx="9"/><rect class="hd p" x="350" y="264" width="230" height="16"/>
+<text class="tn" x="362" y="270">tb_siswa</text>
+<line class="sep" x1="350" y1="280" x2="580" y2="280"/>
+<text class="k PK" x="359" y="295">PK</text>
+<text class="cn pk" x="386" y="295">id</text>
+<text class="ty" x="570" y="295" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="302" x2="580" y2="302"/>
+<text class="k FK" x="359" y="317">FK</text>
+<text class="cn" x="386" y="317">user_id</text>
+<text class="ty" x="570" y="317" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="324" x2="580" y2="324"/>
+<text class="k UK" x="359" y="339">UK</text>
+<text class="cn" x="386" y="339">nis</text>
+<text class="ty" x="570" y="339" text-anchor="end">varchar(20)</text>
+<line class="sep" x1="350" y1="346" x2="580" y2="346"/>
+<text class="k FK" x="359" y="361">FK</text>
+<text class="cn" x="386" y="361">kelas_id</text>
+<text class="ty" x="570" y="361" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="368" x2="580" y2="368"/>
+<text class="cn" x="386" y="383">jenis_kelamin</text>
+<text class="ty" x="570" y="383" text-anchor="end">enum(L,P)</text>
+</g>
+<g>
+<rect class="tbl" x="350" y="640" width="230" height="184" rx="9"/>
+<rect class="hd l" x="350" y="640" width="230" height="30" rx="9"/><rect class="hd l" x="350" y="654" width="230" height="16"/>
+<text class="tn" x="362" y="660">tb_konsultasi_wali_kelas</text>
+<line class="sep" x1="350" y1="670" x2="580" y2="670"/>
+<text class="k PK" x="359" y="685">PK</text>
+<text class="cn pk" x="386" y="685">id</text>
+<text class="ty" x="570" y="685" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="692" x2="580" y2="692"/>
+<text class="k FK" x="359" y="707">FK</text>
+<text class="cn" x="386" y="707">laporan_id</text>
+<text class="ty" x="570" y="707" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="714" x2="580" y2="714"/>
+<text class="k FK" x="359" y="729">FK</text>
+<text class="cn" x="386" y="729">guru_bk_id</text>
+<text class="ty" x="570" y="729" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="736" x2="580" y2="736"/>
+<text class="k FK" x="359" y="751">FK</text>
+<text class="cn" x="386" y="751">wali_kelas_id</text>
+<text class="ty" x="570" y="751" text-anchor="end">bigint</text>
+<line class="sep" x1="350" y1="758" x2="580" y2="758"/>
+<text class="cn" x="386" y="773">hasil_diskusi</text>
+<text class="ty" x="570" y="773" text-anchor="end">text</text>
+<line class="sep" x1="350" y1="780" x2="580" y2="780"/>
+<text class="cn" x="386" y="795">kesimpulan</text>
+<text class="ty" x="570" y="795" text-anchor="end">enum</text>
+<line class="sep" x1="350" y1="802" x2="580" y2="802"/>
+<text class="cn" x="386" y="817">tanggal_diskusi</text>
+<text class="ty" x="570" y="817" text-anchor="end">datetime</text>
+</g>
+<g>
+<rect class="tbl" x="660" y="180" width="252" height="360" rx="9"/>
+<rect class="hd c" x="660" y="180" width="252" height="30" rx="9"/><rect class="hd c" x="660" y="194" width="252" height="16"/>
+<text class="tn" x="672" y="200">tb_laporan</text>
+<line class="sep" x1="660" y1="210" x2="912" y2="210"/>
+<text class="k PK" x="669" y="225">PK</text>
+<text class="cn pk" x="696" y="225">id</text>
+<text class="ty" x="902" y="225" text-anchor="end">bigint</text>
+<line class="sep" x1="660" y1="232" x2="912" y2="232"/>
+<text class="k UK" x="669" y="247">UK</text>
+<text class="cn" x="696" y="247">kode_laporan</text>
+<text class="ty" x="902" y="247" text-anchor="end">varchar(20)</text>
+<line class="sep" x1="660" y1="254" x2="912" y2="254"/>
+<text class="k FK" x="669" y="269">FK</text>
+<text class="cn" x="696" y="269">pelapor_id</text>
+<text class="ty" x="902" y="269" text-anchor="end">bigint</text>
+<line class="sep" x1="660" y1="276" x2="912" y2="276"/>
+<text class="k FK" x="669" y="291">FK</text>
+<text class="cn" x="696" y="291">korban_id</text>
+<text class="ty" x="902" y="291" text-anchor="end">bigint</text>
+<line class="sep" x1="660" y1="298" x2="912" y2="298"/>
+<text class="cn" x="696" y="313">terlapor</text>
+<text class="ty" x="902" y="313" text-anchor="end">varchar(150)</text>
+<line class="sep" x1="660" y1="320" x2="912" y2="320"/>
+<text class="cn" x="696" y="335">jenis_bullying</text>
+<text class="ty" x="902" y="335" text-anchor="end">enum</text>
+<line class="sep" x1="660" y1="342" x2="912" y2="342"/>
+<text class="cn" x="696" y="357">deskripsi</text>
+<text class="ty" x="902" y="357" text-anchor="end">text</text>
+<line class="sep" x1="660" y1="364" x2="912" y2="364"/>
+<text class="cn" x="696" y="379">tanggal_kejadian</text>
+<text class="ty" x="902" y="379" text-anchor="end">date</text>
+<line class="sep" x1="660" y1="386" x2="912" y2="386"/>
+<text class="cn" x="696" y="401">lokasi_kejadian</text>
+<text class="ty" x="902" y="401" text-anchor="end">varchar(150)</text>
+<line class="sep" x1="660" y1="408" x2="912" y2="408"/>
+<text class="cn" x="696" y="423">is_anonim</text>
+<text class="ty" x="902" y="423" text-anchor="end">boolean</text>
+<line class="sep" x1="660" y1="430" x2="912" y2="430"/>
+<text class="cn" x="696" y="445">status</text>
+<text class="ty" x="902" y="445" text-anchor="end">enum</text>
+<line class="sep" x1="660" y1="452" x2="912" y2="452"/>
+<text class="k FK" x="669" y="467">FK</text>
+<text class="cn" x="696" y="467">guru_bk_id</text>
+<text class="ty" x="902" y="467" text-anchor="end">bigint</text>
+<line class="sep" x1="660" y1="474" x2="912" y2="474"/>
+<text class="cn" x="696" y="489">konfirmasi_siswa</text>
+<text class="ty" x="902" y="489" text-anchor="end">enum</text>
+<line class="sep" x1="660" y1="496" x2="912" y2="496"/>
+<text class="cn" x="696" y="511">konfirmasi_at</text>
+<text class="ty" x="902" y="511" text-anchor="end">timestamp</text>
+<line class="sep" x1="660" y1="518" x2="912" y2="518"/>
+<text class="cn" x="696" y="533">deleted_at</text>
+<text class="ty" x="902" y="533" text-anchor="end">timestamp</text>
+</g>
+<g>
+<rect class="tbl" x="990" y="150" width="230" height="184" rx="9"/>
+<rect class="hd l" x="990" y="150" width="230" height="30" rx="9"/><rect class="hd l" x="990" y="164" width="230" height="16"/>
+<text class="tn" x="1002" y="170">tb_laporan_status_log</text>
+<line class="sep" x1="990" y1="180" x2="1220" y2="180"/>
+<text class="k PK" x="999" y="195">PK</text>
+<text class="cn pk" x="1026" y="195">id</text>
+<text class="ty" x="1210" y="195" text-anchor="end">bigint</text>
+<line class="sep" x1="990" y1="202" x2="1220" y2="202"/>
+<text class="k FK" x="999" y="217">FK</text>
+<text class="cn" x="1026" y="217">laporan_id</text>
+<text class="ty" x="1210" y="217" text-anchor="end">bigint</text>
+<line class="sep" x1="990" y1="224" x2="1220" y2="224"/>
+<text class="cn" x="1026" y="239">status_lama</text>
+<text class="ty" x="1210" y="239" text-anchor="end">varchar(20)</text>
+<line class="sep" x1="990" y1="246" x2="1220" y2="246"/>
+<text class="cn" x="1026" y="261">status_baru</text>
+<text class="ty" x="1210" y="261" text-anchor="end">varchar(20)</text>
+<line class="sep" x1="990" y1="268" x2="1220" y2="268"/>
+<text class="cn" x="1026" y="283">umpan_balik</text>
+<text class="ty" x="1210" y="283" text-anchor="end">text</text>
+<line class="sep" x1="990" y1="290" x2="1220" y2="290"/>
+<text class="k FK" x="999" y="305">FK</text>
+<text class="cn" x="1026" y="305">diubah_oleh</text>
+<text class="ty" x="1210" y="305" text-anchor="end">bigint</text>
+<line class="sep" x1="990" y1="312" x2="1220" y2="312"/>
+<text class="cn" x="1026" y="327">created_at</text>
+<text class="ty" x="1210" y="327" text-anchor="end">timestamp</text>
+</g>
+<g>
+<rect class="tbl" x="990" y="400" width="230" height="140" rx="9"/>
+<rect class="hd l" x="990" y="400" width="230" height="30" rx="9"/><rect class="hd l" x="990" y="414" width="230" height="16"/>
+<text class="tn" x="1002" y="420">tb_bukti_laporan</text>
+<line class="sep" x1="990" y1="430" x2="1220" y2="430"/>
+<text class="k PK" x="999" y="445">PK</text>
+<text class="cn pk" x="1026" y="445">id</text>
+<text class="ty" x="1210" y="445" text-anchor="end">bigint</text>
+<line class="sep" x1="990" y1="452" x2="1220" y2="452"/>
+<text class="k FK" x="999" y="467">FK</text>
+<text class="cn" x="1026" y="467">laporan_id</text>
+<text class="ty" x="1210" y="467" text-anchor="end">bigint</text>
+<line class="sep" x1="990" y1="474" x2="1220" y2="474"/>
+<text class="cn" x="1026" y="489">path_file</text>
+<text class="ty" x="1210" y="489" text-anchor="end">varchar(255)</text>
+<line class="sep" x1="990" y1="496" x2="1220" y2="496"/>
+<text class="cn" x="1026" y="511">tipe_file</text>
+<text class="ty" x="1210" y="511" text-anchor="end">varchar(50)</text>
+<line class="sep" x1="990" y1="518" x2="1220" y2="518"/>
+<text class="cn" x="1026" y="533">ukuran_kb</text>
+<text class="ty" x="1210" y="533" text-anchor="end">int</text>
+</g>
+
+<path class="ed" d="M270 81 L350 81"/><text class="card" x="282" y="94" text-anchor="middle">1</text><text class="card" x="338" y="94" text-anchor="middle">N</text><text class="el sm" x="310" y="73" text-anchor="middle">wali_kelas_id</text>
+<path class="ed" d="M465 158 L465 250"/><text class="card" x="456" y="174" text-anchor="middle">1</text><text class="card" x="456" y="242" text-anchor="middle">N</text><text class="el" x="474" y="208" text-anchor="middle">kelas_id</text>
+<path class="ed" d="M270 300 L350 300"/><text class="card" x="282" y="313" text-anchor="middle">1</text><text class="card" x="338" y="313" text-anchor="middle">1</text><text class="el" x="310" y="292" text-anchor="middle">user_id</text>
+<path class="ed" d="M155 250 L155 158"/><text class="card" x="164" y="242" text-anchor="middle">1</text><text class="card" x="164" y="174" text-anchor="middle">1</text><text class="el" x="164" y="208" text-anchor="middle">user_id</text>
+<path class="ed" d="M155 434 L155 500"/><text class="card" x="146" y="450" text-anchor="middle">1</text><text class="card" x="146" y="492" text-anchor="middle">1</text><text class="el" x="164" y="470" text-anchor="middle">user_id</text>
+<path class="ed" d="M580 300 L660 300"/><text class="card" x="592" y="313" text-anchor="middle">1</text><text class="card" x="648" y="313" text-anchor="middle">N</text><text class="el" x="620" y="292" text-anchor="middle">pelapor_id</text>
+<path class="ed" d="M580 345 L660 345"/><text class="card" x="592" y="358" text-anchor="middle">1</text><text class="card" x="648" y="358" text-anchor="middle">N</text><text class="el" x="620" y="337" text-anchor="middle">korban_id</text>
+<path class="ed" d="M270 525 L660 525"/><text class="card" x="282" y="538" text-anchor="middle">1</text><text class="card" x="648" y="538" text-anchor="middle">N</text><text class="el" x="465" y="517" text-anchor="middle">guru_bk_id</text>
+<path class="ed" d="M155 618 L155 700 L350 700"/><text class="card" x="146" y="634" text-anchor="middle">1</text><text class="card" x="338" y="713" text-anchor="middle">N</text><text class="el" x="252" y="692" text-anchor="middle">guru_bk_id</text>
+<path class="ed" d="M40 70 L16 70 L16 770 L350 770"/><text class="card" x="28" y="65" text-anchor="middle">1</text><text class="card" x="338" y="783" text-anchor="middle">N</text><text class="el" x="190" y="762" text-anchor="middle">wali_kelas_id</text>
+<path class="ed" d="M580 720 L786 720 L786 540"/><text class="card" x="592" y="733" text-anchor="middle">N</text><text class="card" x="795" y="556" text-anchor="middle">1</text><text class="el" x="683" y="712" text-anchor="middle">laporan_id</text>
+<path class="ed" d="M912 230 L990 230"/><text class="card" x="924" y="243" text-anchor="middle">1</text><text class="card" x="978" y="243" text-anchor="middle">N</text><text class="el" x="951" y="222" text-anchor="middle">laporan_id</text>
+<path class="ed" d="M912 470 L990 470"/><text class="card" x="924" y="483" text-anchor="middle">1</text><text class="card" x="978" y="483" text-anchor="middle">N</text><text class="el" x="951" y="462" text-anchor="middle">laporan_id</text>
+<path class="ed dash" d="M1105 150 L1105 14 L310 14 L310 270 L270 270"/><text class="card" x="1114" y="142" text-anchor="middle">N</text><text class="card" x="282" y="265" text-anchor="middle">1</text><text class="el dash" x="700" y="8" text-anchor="middle">diubah_oleh</text>
+      </svg>
+    </div>
+    <figcaption>tb_laporan terhubung ke tb_siswa dua kali, sebagai pelapor dan sebagai korban, karena siswa bisa melaporkan temannya. Geser ke samping bila diagram terpotong di layar kecil.</figcaption>
+  </figure>
+
+  <section>
+    <h2>Daftar relasi</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Induk</th><th>Anak</th><th>Kolom FK</th><th>Jenis</th><th>Arti</th></tr></thead>
+        <tbody>
+<tr><td data-l="Induk">tb_users</td><td data-l="Anak">tb_siswa / tb_wali_kelas / tb_guru_bk</td><td data-l="Kolom FK"><code>user_id</code></td><td data-l="Jenis">1 : 1</td><td data-l="Arti">Satu akun login punya satu profil sesuai perannya.</td></tr>
+<tr><td data-l="Induk">tb_wali_kelas</td><td data-l="Anak">tb_kelas</td><td data-l="Kolom FK"><code>wali_kelas_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Satu wali kelas memegang satu atau lebih kelas.</td></tr>
+<tr><td data-l="Induk">tb_kelas</td><td data-l="Anak">tb_siswa</td><td data-l="Kolom FK"><code>kelas_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Satu kelas berisi banyak siswa.</td></tr>
+<tr><td data-l="Induk">tb_siswa</td><td data-l="Anak">tb_laporan</td><td data-l="Kolom FK"><code>pelapor_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Satu siswa bisa mengirim banyak laporan.</td></tr>
+<tr><td data-l="Induk">tb_siswa</td><td data-l="Anak">tb_laporan</td><td data-l="Kolom FK"><code>korban_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Satu siswa bisa menjadi korban di banyak laporan. Boleh sama dengan pelapor.</td></tr>
+<tr><td data-l="Induk">tb_guru_bk</td><td data-l="Anak">tb_laporan</td><td data-l="Kolom FK"><code>guru_bk_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Satu guru BK menangani banyak laporan.</td></tr>
+<tr><td data-l="Induk">tb_laporan</td><td data-l="Anak">tb_laporan_status_log</td><td data-l="Kolom FK"><code>laporan_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Setiap perubahan status dan umpan balik menjadi satu baris riwayat.</td></tr>
+<tr><td data-l="Induk">tb_users</td><td data-l="Anak">tb_laporan_status_log</td><td data-l="Kolom FK"><code>diubah_oleh</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Mencatat siapa yang mengubah status.</td></tr>
+<tr><td data-l="Induk">tb_laporan</td><td data-l="Anak">tb_konsultasi_wali_kelas</td><td data-l="Kolom FK"><code>laporan_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Satu laporan bisa dibahas lebih dari sekali.</td></tr>
+<tr><td data-l="Induk">tb_guru_bk, tb_wali_kelas</td><td data-l="Anak">tb_konsultasi_wali_kelas</td><td data-l="Kolom FK"><code>guru_bk_id, wali_kelas_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Setiap diskusi mencatat guru BK dan wali kelas yang terlibat.</td></tr>
+<tr><td data-l="Induk">tb_laporan</td><td data-l="Anak">tb_bukti_laporan</td><td data-l="Kolom FK"><code>laporan_id</code></td><td data-l="Jenis">1 : N</td><td data-l="Arti">Satu laporan boleh punya beberapa file bukti.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+</body></html>

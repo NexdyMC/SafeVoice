@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil & Pusat Dukungan - Ruang Aman</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dominantStart: '#F8FAFC',
+                        dominantEnd: '#EDF4FC',
+                        tealDark: '#12315F',
+                        tealMain: '#2563EB',
+                        tealLight: '#38BDF8',
+                        accentStart: '#FF8A5B',
+                        accentEnd: '#FFB36B',
+                        textMain: '#1F2937',
+                        textSec: '#5B6573',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .bg-dominant-gradient {
+            background: linear-gradient(180deg, #F8FAFC 0%, #EDF4FC 100%);
+        }
+        .bg-teal-gradient {
+            background: linear-gradient(135deg, #12315F 0%, #2563EB 55%, #38BDF8 100%);
+        }
+        .bg-accent-gradient {
+            background: linear-gradient(135deg, #FF8A5B 0%, #FFB36B 100%);
+            background-size: 100%;
+            transition: background-size 0.3s ease, transform 0.2s ease;
+        }
+        .bg-accent-gradient:hover {
+            background-size: 160%;
+            transform: translateY(-2px);
+        }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(18, 49, 95, 0.08), 0 8px 10px -6px rgba(18, 49, 95, 0.08);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dominant-gradient text-textMain min-h-full flex flex-col antialiased">
+
+    <!-- Container Utama: Mobile First, Max 720px di layar lebar -->
+    <div class="w-full max-w-[720px] mx-auto min-h-screen bg-white shadow-sm flex flex-col relative">
+
+        <!-- 1) Bar Atas (Header Bar) -->
+        <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-2xl bg-teal-gradient flex items-center justify-center text-white shadow-sm">
+                    <i class="fa-solid fa-shield-heart text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base text-textMain leading-tight">Ruang Aman</h1>
+                    <p class="text-xs text-textSec font-medium">BK Sekolah</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a href="beranda.html" aria-label="Kembali ke beranda" class="px-2.5 py-1.5 rounded-xl bg-gray-50 hover:bg-gray-100 text-textSec text-xs font-semibold transition-colors flex items-center gap-1.5 border border-gray-100">
+                    <i class="fa-solid fa-house text-xs"></i>
+                    <span class="hidden sm:inline">Beranda</span>
+                </a>
+                <div class="w-9 h-9 rounded-xl bg-teal-50 text-tealDark flex items-center justify-center font-bold text-sm border border-teal-100">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Konten Utama: Profil & Pusat Dukungan -->
+        <main class="flex-1 p-4 space-y-5">
+
+            <!-- Kartu Identitas Siswa -->
+            <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                <div class="w-20 h-20 rounded-2xl bg-teal-gradient text-white flex items-center justify-center font-bold text-2xl shadow-md shrink-0">
+                    BS
+                </div>
+                <div class="flex-1 text-center sm:text-left space-y-1">
+                    <h2 class="text-lg font-bold text-textMain">Budi Santoso</h2>
+                    <p class="text-xs text-textSec font-medium">XI RPL 1 &bull; NIS 2026001</p>
+                    <div class="flex items-center justify-center sm:justify-start gap-2 pt-2">
+                        <button class="px-3 py-1.5 rounded-xl bg-gray-50 hover:bg-gray-100 text-textSec text-xs font-semibold transition-colors border border-gray-200">
+                            <i class="fa-solid fa-camera mr-1 text-tealMain"></i> Ubah foto
+                        </button>
+                        <a href="change-password.html" class="px-3 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-tealDark text-xs font-semibold transition-colors border border-teal-100">
+                            <i class="fa-solid fa-user-pen mr-1 text-tealMain"></i> Edit akun
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kartu Pusat Dukungan (Butuh bicara langsung?) -->
+            <section class="p-5 rounded-2xl bg-gradient-to-br from-teal-50 via-white to-sky-50 border border-teal-100 card-hover shadow-sm space-y-3 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-tealMain/10 rounded-full blur-xl pointer-events-none"></div>
+                
+                <div class="flex items-start justify-between">
+                    <div>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-tealMain text-white">Pusat Konseling</span>
+                        <h3 class="font-bold text-base text-textMain mt-1">Butuh bicara langsung?</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-2xl bg-white text-tealMain flex items-center justify-center shadow-sm border border-teal-100">
+                        <i class="fa-solid fa-comments text-base"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5 text-xs text-textSec">
+                    <p class="font-bold text-textMain text-sm">Ibu Ratna, S.Pd &bull; Guru BK</p>
+                    <p class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-tealMain w-4"></i> Ruang BK, lantai 1</p>
+                    <p class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-tealMain w-4"></i> Senin - Jumat, 07.30 - 15.00 WIB</p>
+                </div>
+
+                <div class="pt-2">
+                    <a href="https://wa.me/6281234567890" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-accent-gradient text-textMain font-bold text-xs shadow-md hover:opacity-95 transition-all">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                        <span>Hubungi guru BK</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Kartu Aktivitasmu -->
+            <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-sm text-textMain flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-tealMain"></i> Aktivitasmu
+                    </h3>
+                    <a href="log.html" class="text-xs text-tealMain font-bold hover:underline">Lihat Log ➔</a>
+                </div>
+                <div class="grid grid-cols-3 gap-3 text-center pt-1">
+                    <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                        <p class="text-lg font-bold text-textMain">3</p>
+                        <p class="text-[11px] text-textSec font-medium">Laporan</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-amber-50 border border-amber-100">
+                        <p class="text-lg font-bold text-amber-700">1</p>
+                        <p class="text-[11px] text-amber-800 font-medium">Diproses</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                        <p class="text-lg font-bold text-emerald-700">1</p>
+                        <p class="text-[11px] text-emerald-800 font-medium">Selesai</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tiga Kartu Kecil & Tombol Keluar -->
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <a href="#" class="p-3.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 card-hover shadow-sm space-y-1.5 flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-tealMain text-base"></i>
+                    <span class="text-xs font-bold text-textMain">Privasi</span>
+                </a>
+                <a href="change-password.html" class="p-3.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 card-hover shadow-sm space-y-1.5 flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-key text-tealMain text-base"></i>
+                    <span class="text-xs font-bold text-textMain">Kata sandi</span>
+                </a>
+                <a href="#" class="p-3.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 card-hover shadow-sm space-y-1.5 flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-bell text-tealMain text-base"></i>
+                    <span class="text-xs font-bold text-textMain">Notifikasi</span>
+                </a>
+            </div>
+
+            <!-- Tombol Keluar -->
+            <div>
+                <a href="login-v7.html" class="w-full py-3.5 rounded-2xl bg-gray-50 hover:bg-red-50 text-textSec hover:text-red-600 font-bold text-xs border border-gray-200 transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>Keluar dari Akun</span>
+                </a>
+            </div>
+
+        </main>
+
+        <!-- Footer Ringkas -->
+        <footer class="py-4 text-center text-xs text-textSec border-t border-gray-100 bg-gray-50/50 mt-auto">
+            <p>Ruang Aman &bull; Layanan Konseling & Pengaduan Siswa yang Terjaga</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

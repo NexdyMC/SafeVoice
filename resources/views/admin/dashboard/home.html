@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - SafeVoice</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        oceanDark: '#0E2443',
+                        oceanMain: '#12315F',
+                        oceanBlue: '#2563EB',
+                        oceanLight: '#38BDF8',
+                        accentStart: '#FF8A5B',
+                        accentEnd: '#FFB36B',
+                        dominantBg: '#F8FAFC',
+                        textMain: '#1F2937',
+                        textSec: '#5B6573',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .bg-ocean-sidebar {
+            background-color: #12315F;
+        }
+        .bg-dominant-gradient {
+            background: linear-gradient(180deg, #F8FAFC 0%, #EDF4FC 100%);
+        }
+        .bg-accent-gradient {
+            background: linear-gradient(135deg, #FF8A5B 0%, #FFB36B 100%);
+            background-size: 100%;
+            transition: background-size 0.3s ease, transform 0.2s ease;
+        }
+        .bg-accent-gradient:hover {
+            background-size: 160%;
+            transform: translateY(-1px);
+        }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(18, 49, 95, 0.08), 0 8px 10px -6px rgba(18, 49, 95, 0.08);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dominant-gradient text-textMain min-h-screen flex antialiased" x-data="{ sidebarOpen: false, currentMenu: 'ringkasan' }">
+
+    <!-- SIDEBAR (Desktop & Mobile Drawer) -->
+    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 bg-ocean-sidebar text-white flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-auto shadow-xl">
+        
+        <!-- Logo & Brand -->
+        <div class="p-6 space-y-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white border border-white/20 shadow-inner">
+                    <i class="fa-solid fa-shield-heart text-xl text-[#38BDF8]"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-white leading-tight">SafeVoice</h1>
+                    <p class="text-[11px] text-white/60 font-medium">Pusat Keadilan</p>
+                </div>
+            </div>
+
+            <!-- Menu Navigasi -->
+            <nav class="space-y-1.5 text-sm font-medium">
+                <a href="#" @click="currentMenu = 'ringkasan'" :class="currentMenu === 'ringkasan' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all">
+                    <i class="fa-solid fa-house-chimney w-5 text-center"></i>
+                    <span>Ringkasan</span>
+                </a>
+                <a href="#" @click="currentMenu = 'laporan'" :class="currentMenu === 'laporan' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all relative">
+                    <i class="fa-solid fa-folder-open w-5 text-center"></i>
+                    <span>Laporan</span>
+                    <span class="ml-auto px-2 py-0.5 rounded-full text-[10px] bg-amber-500 text-white font-bold">6</span>
+                </a>
+                <a href="#" @click="currentMenu = 'statistik'" :class="currentMenu === 'statistik' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    <span>Statistik</span>
+                </a>
+                <a href="#" @click="currentMenu = 'pengguna'" :class="currentMenu === 'pengguna' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all">
+                    <i class="fa-solid fa-users-gear w-5 text-center"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="#" @click="currentMenu = 'kelas'" :class="currentMenu === 'kelas' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all">
+                    <i class="fa-solid fa-school w-5 text-center"></i>
+                    <span>Kelas</span>
+                </a>
+                <a href="#" @click="currentMenu = 'artikel'" :class="currentMenu === 'artikel' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all">
+                    <i class="fa-solid fa-newspaper w-5 text-center"></i>
+                    <span>Artikel</span>
+                </a>
+                <a href="#" @click="currentMenu = 'log'" :class="currentMenu === 'log' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all">
+                    <i class="fa-solid fa-timeline w-5 text-center"></i>
+                    <span>Log aktivitas</span>
+                </a>
+                <a href="#" @click="currentMenu = 'pengaturan'" :class="currentMenu === 'pengaturan' ? 'bg-white/15 text-white font-bold shadow-sm' : 'text-white/70 hover:bg-white/10 hover:text-white'" class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all">
+                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                    <span>Pengaturan</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Profil Admin & Tombol Keluar -->
+        <div class="p-6 border-t border-white/10 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white/15 text-white flex items-center justify-center font-bold text-sm border border-white/10">
+                    KS
+                </div>
+                <div>
+                    <h2 class="font-bold text-sm text-white">Kepala Sekolah</h2>
+                    <p class="text-[11px] text-white/60">Admin</p>
+                </div>
+            </div>
+            <a href="login-v7.html" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-red-500/20 text-white/80 hover:text-red-200 text-xs font-bold transition-colors flex items-center justify-center gap-2 border border-white/10">
+                <i class="fa-solid fa-power-off text-xs"></i>
+                <span>Keluar</span>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+        <!-- Top Bar Mobile & Header -->
+        <header class="bg-white/85 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+            <div class="flex items-center gap-4">
+                <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-textMain border border-gray-200">
+                    <i class="fa-solid fa-bars text-base"></i>
+                </button>
+                <div>
+                    <h2 class="text-xl font-bold text-textMain capitalize" x-text="currentMenu">Ringkasan</h2>
+                    <p class="text-xs text-textSec font-medium">Kondisi laporan di sekolah tahun ajaran ini. Tampilan memakai data contoh.</p>
+                </div>
+            </div>
+
+            <!-- Tahun Ajaran & Ekspor Laporan -->
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-xl border border-gray-200 text-xs font-semibold text-textMain">
+                    <span class="text-textSec">Tahun ajaran:</span>
+                    <select class="bg-transparent focus:outline-none font-bold text-oceanMain">
+                        <option value="2026/2027">2026/2027</option>
+                        <option value="2025/2026">2025/2026</option>
+                    </select>
+                </div>
+                <button class="px-4 py-2 rounded-xl bg-accent-gradient text-textMain font-bold text-xs shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel"></i>
+                    <span>Ekspor laporan</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Konten Halaman Ringkasan -->
+        <main class="flex-1 p-6 space-y-6 overflow-y-auto">
+
+            <!-- Alert Peringatan Keterlambatan -->
+            <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-amber-900">3 laporan belum ditangani lebih dari 3 hari</h3>
+                        <p class="text-xs text-amber-700 mt-0.5">Guru BK perlu menindaklanjuti agar siswa tidak menunggu terlalu lama.</p>
+                    </div>
+                </div>
+                <button @click="currentMenu = 'laporan'" class="px-4 py-2 rounded-xl bg-oceanMain hover:bg-oceanDark text-white font-bold text-xs shadow-sm transition-colors shrink-0 text-center">
+                    Tinjau laporan
+                </button>
+            </div>
+
+            <!-- Kartu Statistik Utama (4 Kartu) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Total Laporan -->
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-1">
+                    <span class="text-xs font-semibold text-textSec">Total laporan</span>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-3xl font-extrabold text-oceanMain">48</span>
+                        <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+12% bln ini</span>
+                    </div>
+                    <p class="text-[11px] text-textSec pt-1 border-t border-gray-50">Tahun ajaran ini</p>
+                </div>
+
+                <!-- Perlu Tindakan -->
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-1">
+                    <span class="text-xs font-semibold text-textSec">Perlu tindakan</span>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-3xl font-extrabold text-amber-600">6</span>
+                        <span class="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Prioritas</span>
+                    </div>
+                    <p class="text-[11px] text-textSec pt-1 border-t border-gray-50">Baru dikirim, belum diproses</p>
+                </div>
+
+                <!-- Sedang Diproses -->
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-1">
+                    <span class="text-xs font-semibold text-textSec">Sedang diproses</span>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-3xl font-extrabold text-blue-600">13</span>
+                        <span class="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">Aktif</span>
+                    </div>
+                    <p class="text-[11px] text-textSec pt-1 border-t border-gray-50">Diproses dan diverifikasi</p>
+                </div>
+
+                <!-- Selesai -->
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-1">
+                    <span class="text-xs font-semibold text-textSec">Selesai</span>
+                    <div class="flex items-baseline justify-between">
+                        <span class="text-3xl font-extrabold text-emerald-600">26</span>
+                        <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Aman</span>
+                    </div>
+                    <p class="text-[11px] text-textSec pt-1 border-t border-gray-50">Kritik dan seluruh laporan</p>
+                </div>
+            </div>
+
+            <!-- Bagian Grafik & Analisis (3 Kolom: Laporan per Bulan, Status, Jenis Perundungan) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Grafik 1: Laporan per Bulan -->
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sm text-textMain">Laporan per bulan</h3>
+                        <span class="text-[11px] text-textSec">6 bulan terakhir</span>
+                    </div>
+                    <!-- Simulasikan Bar Chart dengan CSS Batang -->
+                    <div class="h-44 flex items-end justify-between gap-2 pt-6 px-2 border-b border-gray-100">
+                        <div class="flex flex-col items-center gap-1 flex-1">
+                            <span class="text-[10px] font-bold text-textSec">5</span>
+                            <div class="w-full bg-oceanMain/70 hover:bg-oceanMain rounded-t-lg transition-all" style="height: 45%;"></div>
+                            <span class="text-[10px] text-textSec font-medium">Mei</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 flex-1">
+                            <span class="text-[10px] font-bold text-textSec">7</span>
+                            <div class="w-full bg-oceanMain/70 hover:bg-oceanMain rounded-t-lg transition-all" style="height: 60%;"></div>
+                            <span class="text-[10px] text-textSec font-medium">Jun</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 flex-1">
+                            <span class="text-[10px] font-bold text-textSec">6</span>
+                            <div class="w-full bg-oceanMain/70 hover:bg-oceanMain rounded-t-lg transition-all" style="height: 52%;"></div>
+                            <span class="text-[10px] text-textSec font-medium">Jul</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 flex-1">
+                            <span class="text-[10px] font-bold text-textSec">9</span>
+                            <div class="w-full bg-oceanMain/70 hover:bg-oceanMain rounded-t-lg transition-all" style="height: 75%;"></div>
+                            <span class="text-[10px] text-textSec font-medium">Agu</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 flex-1">
+                            <span class="text-[10px] font-bold text-textSec">11</span>
+                            <div class="w-full bg-oceanMain hover:bg-oceanDark rounded-t-lg transition-all shadow-sm" style="height: 95%;"></div>
+                            <span class="text-[10px] text-textSec font-bold">Sep</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 flex-1">
+                            <span class="text-[10px] font-bold text-textSec">10</span>
+                            <div class="w-full bg-oceanMain/80 hover:bg-oceanMain rounded-t-lg transition-all" style="height: 85%;"></div>
+                            <span class="text-[10px] text-textSec font-medium">Okt</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grafik 2: Status Laporan -->
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-4 flex flex-col justify-between">
+                    <h3 class="font-bold text-sm text-textMain">Status laporan</h3>
+                    
+                    <div class="flex items-center justify-center py-2">
+                        <!-- Simulasi Donut Chart menggunakan SVG -->
+                        <div class="relative w-32 h-32 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-gray-200" stroke-width="3.8" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <!-- Selesai (26/48 -> ~54%) -->
+                                <path class="text-emerald-600" stroke-dasharray="54, 100" stroke-width="3.8" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <!-- Dalam proses (9/48 -> ~19%) offset 54 -->
+                                <path class="text-amber-600" stroke-dasharray="19, 100" stroke-dashoffset="-54" stroke-width="3.8" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <!-- Dikirim (6/48 -> ~12.5%) offset 73 -->
+                                <path class="text-gray-500" stroke-dasharray="12.5, 100" stroke-dashoffset="-73" stroke-width="3.8" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                            <div class="absolute text-center">
+                                <span class="text-lg font-extrabold text-textMain">48</span>
+                                <span class="text-[10px] text-textSec block">Total</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] text-textSec font-medium">
+                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-gray-500"></span> Dikirim (6)</div>
+                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span> Dalam proses (9)</div>
+                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Diverifikasi (4)</div>
+                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Ditolak (3)</div>
+                        <div class="flex items-center gap-1.5 col-span-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Selesai (26)</div>
+                    </div>
+                </div>
+
+                <!-- Grafik 3: Jenis Perundungan -->
+                <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-4">
+                    <h3 class="font-bold text-sm text-textMain">Jenis perundungan</h3>
+                    <div class="space-y-3 text-xs pt-2">
+                        <div class="space-y-1">
+                            <div class="flex justify-between font-semibold"><span>Verbal</span> <span class="text-textSec">19</span></div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div class="bg-oceanMain h-full rounded-full" style="width: 100%;"></div></div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between font-semibold"><span>Siber</span> <span class="text-textSec">12</span></div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div class="bg-oceanMain h-full rounded-full" style="width: 63%;"></div></div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between font-semibold"><span>Fisik</span> <span class="text-textSec">9</span></div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div class="bg-oceanMain h-full rounded-full" style="width: 47%;"></div></div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between font-semibold"><span>Sosial</span> <span class="text-textSec">6</span></div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div class="bg-oceanMain h-full rounded-full" style="width: 31%;"></div></div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between font-semibold"><span>Lainnya</span> <span class="text-textSec">2</span></div>
+                            <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div class="bg-oceanMain h-full rounded-full" style="width: 10%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bagian Bawah: Tabel Laporan Terbaru & Aktivitas / Kelas Perhatian -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Kolom Kiri/Tengah: Laporan Terbaru (Lebar 2 Kolom) -->
+                <div class="lg:col-span-2 p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-sm text-textMain">Laporan terbaru</h3>
+                            <p class="text-[11px] text-textSec">Identitas pelapor anonim tidak ditampilkan kepada admin; isi laporan hanya dibuka oleh guru BK.</p>
+                        </div>
+                        <a href="#" @click="currentMenu = 'laporan'" class="text-xs text-oceanBlue font-bold hover:underline">Lihat semua</a>
+                    </div>
+
+                    <!-- Tabel Responsif -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="border-b border-gray-100 text-textSec font-semibold">
+                                    <th class="py-2.5 px-3">KODE</th>
+                                    <th class="py-2.5 px-3">JENIS</th>
+                                    <th class="py-2.5 px-3">KELAS</th>
+                                    <th class="py-2.5 px-3">PELAPOR</th>
+                                    <th class="py-2.5 px-3">STATUS</th>
+                                    <th class="py-2.5 px-3">DITANGANI</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50 font-medium">
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="py-3 px-3 font-bold text-oceanMain">BLY-20261012-0004</td>
+                                    <td class="py-3 px-3">Verbal</td>
+                                    <td class="py-3 px-3">XI RPL 2</td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold text-[10px]">Anonim</span></td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 font-bold text-[10px]">Dikirim</span></td>
+                                    <td class="py-3 px-3 text-textSec italic">Belum ditugaskan</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="py-3 px-3 font-bold text-oceanMain">BLY-20261012-0002</td>
+                                    <td class="py-3 px-3">Fisik</td>
+                                    <td class="py-3 px-3">XI RPL 1</td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold text-[10px]">Siswa</span></td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 font-bold text-[10px]">Dalam proses</span></td>
+                                    <td class="py-3 px-3 font-semibold text-textMain">Ibu Ratna</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="py-3 px-3 font-bold text-oceanMain">BLY-20261009-0001</td>
+                                    <td class="py-3 px-3">Siber</td>
+                                    <td class="py-3 px-3">X TKJ 1</td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold text-[10px]">Anonim</span></td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold text-[10px]">Diverifikasi</span></td>
+                                    <td class="py-3 px-3 font-semibold text-textMain">Ibu Ratna</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="py-3 px-3 font-bold text-oceanMain">BLY-20260928-0003</td>
+                                    <td class="py-3 px-3">Siber</td>
+                                    <td class="py-3 px-3">XI RPL 1</td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold text-[10px]">Siswa</span></td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]">Selesai</span></td>
+                                    <td class="py-3 px-3 font-semibold text-textMain">Ibu Ratna</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="py-3 px-3 font-bold text-oceanMain">BLY-20260925-0002</td>
+                                    <td class="py-3 px-3">Sosial</td>
+                                    <td class="py-3 px-3">XII AKL 1</td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold text-[10px]">Siswa</span></td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-red-50 text-red-700 font-bold text-[10px]">Ditolak</span></td>
+                                    <td class="py-3 px-3 font-semibold text-textMain">Pak Dedi</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50/50">
+                                    <td class="py-3 px-3 font-bold text-oceanMain">BLY-20260921-0001</td>
+                                    <td class="py-3 px-3">Verbal</td>
+                                    <td class="py-3 px-3">XI RPL 2</td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold text-[10px]">Anonim</span></td>
+                                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px]">Selesai</span></td>
+                                    <td class="py-3 px-3 font-semibold text-textMain">Pak Dedi</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Aktivitas Terbaru & Kelas Perhatian -->
+                <div class="space-y-6">
+                    
+                    <!-- Aktivitas Terbaru -->
+                    <div class="p-5 rounded-2xl bg-white border border-gray-100 card-hover shadow-sm space-y-4">
+                        <h3 class="font-bold text-sm text-textMain">Aktivitas terbaru</h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="flex items-start gap-2.5 pb-3 border-b border-gray-50">
+                                <span class="w-2 h-2 rounded-full bg-oceanBlue mt-1.5 shrink-0"></span>
+                                <div>
+                                    <p class="font-medium text-textMain">Ibu Ratna mengubah BLY-20261012-0002 ke <span class="font-bold">Dalam proses</span></p>
+                                    <p class="text-[11px] text-textSec mt-0.5">Hari ini, 10.30</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2.5 pb-3 border-b border-gray-50">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 mt-1.5 shrink-0"></span>
+                                <div>
+                                    <p class="font-medium text-textMain">Laporan baru BLY-20261012-0004 masuk <span class="font-bold">(anonim)</span></p>
+                                    <p class="text-[11px] text-textSec mt-0.5">Hari ini, 08.15</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2.5 pb-3 border-b border-gray-50">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span>
+                                <div>
+                                    <p class="font-medium text-textMain">Siswa mengonfirmasi aman pada BLY-20260928-0003</p>
+                                    <p class="text-[11px] text-textSec mt-0.5">Kemarin, 19.45</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
+                                <div>
+                                    <p class="font-medium text-textMain">Pak Dedi memverifikasi BLY-20261009-0001</p>
+                                    <p class="text-[11px] text-textSec mt-0.5">11 lalu, 09.20</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kelas yang Perlu Perhatian -->
+                    <div class="p-5 rounded-2xl bg-ocean-sidebar text-white card-hover shadow-sm space-y-3 relative overflow-hidden">
+                        <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                        <h3 class="font-bold text-sm text-white">Kelas yang perlu perhatian</h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/10 border border-white/10">
+                                <span class="font-bold">XI RPL 2</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-accentStart text-textMain font-extrabold text-[11px]">7 laporan</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/10 border border-white/10">
+                                <span class="font-bold">X TKJ 1</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-accentStart text-textMain font-extrabold text-[11px]">5 laporan</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/10 border border-white/10">
+                                <span class="font-bold">XI AKL 1</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-accentStart text-textMain font-extrabold text-[11px]">4 laporan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- Footer Ringkas -->
+        <footer class="py-4 px-6 text-center text-xs text-textSec border-t border-gray-100 bg-white">
+            <p>SafeVoice Dashboard Admin &bull; Sistem Pemantauan & Manajemen Pengaduan Sekolah</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
